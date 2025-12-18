@@ -1,19 +1,19 @@
-from flask import Flask, jsonify, request
-
+from flask import Flask, jsonify, request,Blueprint
+from categoria import Categoria
 from categoria_repository import CategoriaRepository
 
-app = Flask(__name__)
-
-@app.route("/ola",methods =['GET'])
+categoria_bp = Blueprint("categorias",__name__)
+repo = CategoriaRepository()
+@categoria_bp.route("/ola",methods =['GET'])
 def ola():
     return "minha primeira API"
 
-@app.route("/clientes",methods = ['GET'])
+@categoria_bp.route("/clientes",methods = ['GET'])
 def listar_cliente():
      dados = [{"nome":"Leandro"},{"nome":"Maria"},{"nome":"Silva"},{"nome":"Marta"}]
      return jsonify(dados)
 
-@app.route("/categorias",methods =['GET'])
+@categoria_bp.route("/categorias",methods =['GET'])
 def listar_categorias():
     repo = CategoriaRepository()
     dados = repo.find_all()
@@ -30,14 +30,14 @@ def listar_categorias():
     """
     return jsonify(dados_retorno)
 
-@app.route("/categorias/<int:categoriaID>")
+@categoria_bp.route("/categorias/<int:categoriaID>")
 def buscar_por_id(categoriaID):
     repo = CategoriaRepository()
     categoria = repo.find_by_id(categoriaID)
     categoria_retorno = {"id":categoria[0],"nome":categoria[1],"descricao":categoria[2]}
     return jsonify(categoria_retorno)
 
-@app.route("/categorias",methods = ['POST'])
+@categoria_bp.route("/categorias",methods = ['POST'])
 def cadastro_categoria():
     repo = CategoriaRepository()
     #recebendo os dados via protocolo POST http
@@ -55,7 +55,7 @@ def cadastro_categoria():
         "nome":nome,
         "descricao":descricao
         })
-@app.route("/categorias/<int:id_categoria>",methods=['DELETE'])
+@categoria_bp.route("/categorias/<int:id_categoria>",methods=['DELETE'])
 def remover_categoria(id_categoria):
     #objeto de conumicacao
     repo = CategoriaRepository()
@@ -65,8 +65,4 @@ def remover_categoria(id_categoria):
 
     return jsonify({
         "mensagem":"Categoria removida com sucesso."
-    })
-
-
-if __name__=="__main__":
-    app.run(debug=True, port = 5000)
+})

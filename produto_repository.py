@@ -41,7 +41,7 @@ class ProdutoRepository:
         try:
             cursor = self.conexao.get_cursor()
             cursor.execute(
-                "UPDATE Produto SET Nome = %s,descricao = %s,preco =%s,quantidadeEstoque = %s,CategoriaID =%s WHERE ProdutoID = %s",
+                "UPDATE Produto SET Nome = %s,Descricao = %s,Preco =%s,QuantidadeEstoque = %s,CategoriaID =%s WHERE ProdutoID = %s",
                 (nome,descricao,preco,quantidadeEstoque,CategoriaID)
             )
             self.conexao.get_conexao().commit()

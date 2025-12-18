@@ -1,10 +1,10 @@
-from flask import Flask, jsonify, request
-
+from flask import Flask, jsonify, request,Blueprint
 from produto_repository import ProdutoRepository
+from produto import Produto
 
-app = Flask(__name__)
-
-@app.route("/produtos",methods =['GET'])
+produto_bp = Blueprint("produtos",__name__)
+repo = ProdutoRepository()
+@produto_bp.route("/produtos",methods =['GET'])
 def listar_produtos():
     repo = ProdutoRepository()
     dados = repo.find_all()
@@ -14,14 +14,14 @@ def listar_produtos():
     
     return jsonify(dados_retorno)
 
-@app.route("/produtos/<int:produtoID>")
+@produto_bp.route("/produtos/<int:produtoID>")
 def buscar_id(produtoID):
     repo = ProdutoRepository()
     produto = repo.find_by_id(produtoID)
     produto_retorno = {"id":produto[0],"nome":produto[1],"desscricao":produto[2],"preco":produto[3],"quantidadeEstoque":produto[4],"CategoriaID":produto[5]}
     return jsonify(produto_retorno)
 
-@app.route("/produtos",methods = ['POST'])
+@produto_bp.route("/produtos",methods = ['POST'])
 def cadastro_produto():
     repo = ProdutoRepository()
 
@@ -44,14 +44,11 @@ def cadastro_produto():
         "CategoriaID":CategoriaID
     })
 
-@app.route("/produtos/<int:id_produto>",methods = ['DELETE'])
+@produto_bp.route("/produtos/<int:id_produto>",methods = ['DELETE'])
 def remover_produto(id_produto):
     repo = ProdutoRepository()
-    repo.detele(id_produto)
+    repo.delete(id_produto)
 
     return jsonify({
         "mensagem":"Produto removido com sucesso."
-    })
-
-if __name__=="__main__":
-    app.run(debug=True, port = 4000)
+})
